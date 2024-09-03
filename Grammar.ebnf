@@ -1,0 +1,52 @@
+ctc-program         ::= prog-doc? prog-block EOF;
+prog-doc            ::= comment-block ;
+prog-block          ::= ( item )* ;
+item                ::= expr | variable-decl | function-block | control-block | comment-block ;
+control-block       ::= return-stmt | if-block | for-block | while-block ;
+
+variable-decl       ::= global-decl | persistent-decl ;
+global-decl         ::= "global" ident+ ';'? EOL ;
+persistent-decl     ::= "persistent" ident+ ';'? EOL ;
+
+function-block      ::= function-header function-doc? prog-block function-footer ;
+function-header     ::= "function" lhs-expr '=' arg-list EOL ;
+function-doc        ::= comment-block ;
+function-footer     ::= "endfunction" | "end" EOL ;
+
+return-stmt         ::= "return" ';'? EOL ;
+
+if-block            ::= if-header prog-block ( elseif-block )* else-block? if-footer ;
+(* Parenthesis are optional in conditions *)
+if-header           ::= "if" ( '(' cond-expr ')' ) | cond-expr EOL ;
+elseif-block        ::= elseif-header prog-block ;
+elseif-header       ::= "elseif" '(' cond-expr ')' EOL ;
+else-block          ::= else-header prog-block ;
+else-header         ::= "else" EOL ;
+if-footer           ::= "endif" | "end" EOL ;
+
+for-block           ::= for-header prog-block for-footer ;
+for-header          ::= "for" lhs-expr '=' rhs-expr EOL ;
+for-footer          ::= "endfor" | "end" EOL ;
+
+while-block         ::= while-header prog-block while-footer ;
+(* Parenthesis are optional in conditions *)
+while-header        ::= "while" ( '(' cond-expr ')' ) | cond-expr EOL ;
+while-footer        ::= "endwhile" | "end" EOL ;
+
+expr                ::= assign-expr ';'? EOL ;
+assign-expr         ::= 
+logical-or-expr     ::= 
+logical-and-expr    ::= 
+element-or-expr     ::= 
+element-and-expr    ::= 
+comparison-expr     ::=
+colon-expr          ::=
+add-expr            ::= mul-expr | mul-expr add-op add-expr ;
+mul-expr            ::= unary-expr | unary-expr mul-op mul-expr ;
+unary-expr          ::= pow-expr | unary-op unary-expr ;
+pow-expr            ::= primary | primary '^' pow-expr ;
+
+add-op              ::= '+' | '-' ;
+mul-op              ::= '*' | '/' | '\\' | '%' | ".*" | "./" | ".\\" | ".%" ;
+unary-op            ::= '+' | '-' ;
+primary             ::= number | '(' expr ')' | identifier | call-expr ;
